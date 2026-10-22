@@ -20,8 +20,8 @@ public class Chessboard
     private int _blackChessPiecesValue = 0;
     private List<char> _charChessboard;
 
-    public List<ChessPiece> WhiteChessPieces { get; private set; } = new List<ChessPiece>();
-    public List<ChessPiece> BlackChessPieces { get; private set; } = new List<ChessPiece>();
+    public List<BaseChessPiece> WhiteChessPieces { get; private set; } = new List<BaseChessPiece>();
+    public List<BaseChessPiece> BlackChessPieces { get; private set; } = new List<BaseChessPiece>();
 
     public Chessboard(int edgeLength, int maxChessPiecesValue)
     {
@@ -30,7 +30,7 @@ public class Chessboard
 
         _charChessboard = Enumerable.Repeat(' ', edgeLength * edgeLength).ToList();
     }
-    public void AddChessPiece(ChessPiece newChessPiece)
+    public void AddChessPiece(BaseChessPiece newChessPiece)
     {
         ref int curChessPiecesValue = ref (newChessPiece.IsWhitePiece? ref _whiteChessPiecesValue : ref _blackChessPiecesValue);
 
@@ -43,12 +43,12 @@ public class Chessboard
         curChessPiecesValue += newChessPiece.ChessPieceValue;
 
         int pieceIndex;
-        List<ChessPiece> curChessPieces = newChessPiece.IsWhitePiece ? WhiteChessPieces : BlackChessPieces;
+        List<BaseChessPiece> curChessPieces = newChessPiece.IsWhitePiece ? WhiteChessPieces : BlackChessPieces;
 
         if (newChessPiece.IsWhitePiece)
-            pieceIndex = curChessPieces.Count == 0 ? 0 : curChessPieces[curChessPieces.Count - 1].indexInChessboard + 1;
+            pieceIndex = curChessPieces.Count == 0 ? 0 : curChessPieces[curChessPieces.Count - 1].IndexInChessboard + 1;
         else
-            pieceIndex = curChessPieces.Count == 0 ? _charChessboard.Count - 1 : curChessPieces[curChessPieces.Count - 1].indexInChessboard - 1;
+            pieceIndex = curChessPieces.Count == 0 ? _charChessboard.Count - 1 : curChessPieces[curChessPieces.Count - 1].IndexInChessboard - 1;
 
         if (pieceIndex < 0 || pieceIndex > _charChessboard.Count || _charChessboard[pieceIndex] != ' ')
         {
@@ -56,13 +56,13 @@ public class Chessboard
             return;
         }
 
-        newChessPiece.indexInChessboard = pieceIndex;
+        newChessPiece.IndexInChessboard = pieceIndex;
         curChessPieces.Add(newChessPiece);
         _charChessboard[pieceIndex] = newChessPiece.CharChessPiece;
     }
-    public void RemoveChessPiece(ChessPiece removingChessPiece)
+    public void RemoveChessPiece(BaseChessPiece removingChessPiece)
     {
-        List<ChessPiece> curChessPieces = removingChessPiece.IsWhitePiece ? WhiteChessPieces : BlackChessPieces;
+        List<BaseChessPiece> curChessPieces = removingChessPiece.IsWhitePiece ? WhiteChessPieces : BlackChessPieces;
         
         int rmChessPieceIndex = curChessPieces.FindIndex(chessPiece => chessPiece == removingChessPiece);
 
@@ -72,7 +72,7 @@ public class Chessboard
             return;
         }
 
-        int i = removingChessPiece.indexInChessboard;
+        int i = removingChessPiece.IndexInChessboard;
 
         if (removingChessPiece.IsWhitePiece)
         {

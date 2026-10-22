@@ -1,47 +1,43 @@
-﻿using System.Runtime.CompilerServices;
-
 Console.OutputEncoding = System.Text.Encoding.UTF8;
 
-[MethodImpl(MethodImplOptions.NoInlining)]
-WeakReference<ChessPiece> CreateTemporary()
-{
-    var temp = new ChessPiece('T', 10, true);
-    return new WeakReference<ChessPiece>(temp);
-}
-
-[MethodImpl(MethodImplOptions.NoInlining)]
-void CheckWeakReference(WeakReference<ChessPiece> weakReference)
-{
-    Console.WriteLine("A chess piece is exist in the weak pointer: " + weakReference.TryGetTarget(out _));
-}
-
 using IssueLog log = new IssueLog("LOG");
-IssueLog refLog = log;
-refLog.testNumber = 10;
-Console.WriteLine("IssueLog: test number — " + log.testNumber);
 
-var pweak = CreateTemporary();
-CheckWeakReference(pweak);
-GC.Collect();
-GC.WaitForPendingFinalizers();
-CheckWeakReference(pweak);
+Console.WriteLine("-------CONSTRUCTORS-------");
+Pawn original = new Pawn();
+original.IndexInChessboard = 8;
+Pawn copied = new Pawn(original);
+Console.WriteLine($"Copied index = {copied.IndexInChessboard}");
 
-List<ChessPiece> wchp = new List<ChessPiece>{new ChessPiece('P', 1, true), new ChessPiece('Q', 8, true), new ChessPiece('E', 3, true)};
-List<ChessPiece> bchp = new List<ChessPiece>{new ChessPiece('P', 1, false), new ChessPiece('E', 3, false), new ChessPiece('L', 5, false)};
-GameManagement gm = new GameManagement(8, 10);
+Console.WriteLine("-------COPIES-------");
+BaseChessPiece shallow = original.ShallowCopy();
+shallow.IndexInChessboard = 16;
+Console.WriteLine($"Shallow: original = {original.IndexInChessboard}, copy = {shallow.IndexInChessboard}");
+BaseChessPiece deep = original.Clone();
+deep.IndexInChessboard = 24;
+Console.WriteLine($"Deep: original = {original.IndexInChessboard}, copy = {deep.IndexInChessboard}");
 
-foreach (var chp in wchp)
-{
-    gm.MainChessboard.AddChessPiece(chp);
-}
+Console.WriteLine("-------POLYMORPHISM-------");
+BaseChessPiece[] pieces = {new Pawn(), new Rook(false)};
+foreach (BaseChessPiece piece in pieces)
+    Console.WriteLine(piece.Describe());
 
-foreach (var chp in bchp)  
-{
-    gm.MainChessboard.AddChessPiece(chp);
-}
+Console.WriteLine("-------STRINGS-------");
+string description = pieces[0].Name + " white";
+int separator = description.IndexOf(' ');
+string name = description.Substring(0, separator);
+Console.WriteLine($"{description}, name is Pawn = {name == "Pawn"}");
 
-Console.WriteLine("Press any key to continue.");
-Console.ReadKey(true);
-gm.Update();
+Console.WriteLine("-------EQUALITY-------");
+BaseChessPiece equal = original.Clone();
+Console.WriteLine($"Equal copies = {original.Equals(equal)}, same hash = {original.GetHashCode() == equal.GetHashCode()}");
+equal.IndexInChessboard = 32;
+Console.WriteLine($"After change = {original.Equals(equal)}, different type = {original.Equals(pieces[1])}");
 
+Console.WriteLine("-------BOARD-------");
+GameManagement gameManagement = new GameManagement(8, 10);
+gameManagement.MainChessboard.AddChessPiece(new Pawn());
+gameManagement.MainChessboard.AddChessPiece(new Rook(false));
+gameManagement.MainChessboard.Update();
+
+Console.WriteLine($"Created pieces = {BaseChessPiece.GetCreatedPiecesCount()}");
 log.Write("Program end");
