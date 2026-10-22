@@ -11,7 +11,7 @@ GameManagement::~GameManagement()
 	std::wcout << L"GameManagement was destroyed" << std::endl;
 }
 
-Chessboard& GameManagement::GetChessboard()
+Chessboard& GameManagement::GetChessboard() const
 {
     return *_chessboard;
 }
@@ -29,7 +29,7 @@ void GameManagement::Update()
     std::wcout << std::endl;
 }
 
-void GameManagement::ClearConsole()
+void GameManagement::ClearConsole() const
 {
 	std::wcout << L"\033[2J\033[3J\033[1;1H" << std::flush;
 }

@@ -11,17 +11,17 @@ Chessboard::~Chessboard()
     std::wcout << L"Chessboard was destroyed" << std::endl;
 }
 
-std::vector<std::weak_ptr<ChessPiece>> Chessboard::GetWhiteChessPieces()
+std::vector<std::weak_ptr<BaseChessPiece>> Chessboard::GetWhiteChessPieces() const
 {
     return _whiteChessPieces;
 }
 
-std::vector<std::weak_ptr<ChessPiece>> Chessboard::GetBlackChessPieces()
+std::vector<std::weak_ptr<BaseChessPiece>> Chessboard::GetBlackChessPieces() const
 {
     return _blackChessPieces;
 }
 
-void Chessboard::AddChessPiece(std::weak_ptr<ChessPiece> weakNewChessPiece)
+void Chessboard::AddChessPiece(const std::weak_ptr<BaseChessPiece>& weakNewChessPiece)
 {
     auto newChessPiece = GetRealPointerOfChessPiece(weakNewChessPiece);
     bool isWhitePiece = newChessPiece->GetIsWhitePiece();
@@ -37,7 +37,7 @@ void Chessboard::AddChessPiece(std::weak_ptr<ChessPiece> weakNewChessPiece)
     curChessPiecesValue += chessPieceValue;
 
     int pieceIndex;
-    std::vector<std::weak_ptr<ChessPiece>>& weakCurChessPieces = isWhitePiece ? _whiteChessPieces : _blackChessPieces;
+    std::vector<std::weak_ptr<BaseChessPiece>>& weakCurChessPieces = isWhitePiece ? _whiteChessPieces : _blackChessPieces;
     int curChessPiecesVectorSize = weakCurChessPieces.size();
 
     if (isWhitePiece)
@@ -45,7 +45,7 @@ void Chessboard::AddChessPiece(std::weak_ptr<ChessPiece> weakNewChessPiece)
     else
         pieceIndex = curChessPiecesVectorSize == 0 ? _wcharChessboard.size() - 1 : GetRealPointerOfChessPiece(weakCurChessPieces[curChessPiecesVectorSize - 1])->GetIndexInChessboard() - 1;
 
-    if (pieceIndex < 0 || pieceIndex >= _wcharChessboard.size() || _wcharChessboard[pieceIndex] != ' ')
+    if (pieceIndex < 0 || pieceIndex >= static_cast<int>(_wcharChessboard.size()) || _wcharChessboard[pieceIndex] != ' ')
     {
         std::wcout<< newChessPiece->GetWcharChessPiece() << " piece is superfluous, _isWhitePeace = " << isWhitePiece << std::endl;
         return;
@@ -56,15 +56,15 @@ void Chessboard::AddChessPiece(std::weak_ptr<ChessPiece> weakNewChessPiece)
     _wcharChessboard[pieceIndex] = newChessPiece->GetWcharChessPiece();
 }
 
-void Chessboard::RemoveChessPiece(std::weak_ptr<ChessPiece> weakRemovingChessPiece)
+void Chessboard::RemoveChessPiece(const std::weak_ptr<BaseChessPiece>& weakRemovingChessPiece)
 {
     auto removingChessPiece = GetRealPointerOfChessPiece(weakRemovingChessPiece);
     bool isWhitePiece = removingChessPiece->GetIsWhitePiece();
-    std::vector<std::weak_ptr<ChessPiece>>& weakCurChessPieces = isWhitePiece ? _whiteChessPieces : _blackChessPieces;
-    std::vector<std::weak_ptr<ChessPiece>>::iterator weakNecessaryPiece = std::find_if(
+    std::vector<std::weak_ptr<BaseChessPiece>>& weakCurChessPieces = isWhitePiece ? _whiteChessPieces : _blackChessPieces;
+    std::vector<std::weak_ptr<BaseChessPiece>>::iterator weakNecessaryPiece = std::find_if(
         weakCurChessPieces.begin(), 
         weakCurChessPieces.end(), 
-        [&removingChessPiece, this](const std::weak_ptr<ChessPiece>& item){
+        [&removingChessPiece, this](const std::weak_ptr<BaseChessPiece>& item){
             return removingChessPiece == GetRealPointerOfChessPiece(item);
         });
 
@@ -90,16 +90,16 @@ void Chessboard::RemoveChessPiece(std::weak_ptr<ChessPiece> weakRemovingChessPie
     _wcharChessboard[i] = ' ';
     
 
-    std::vector<std::weak_ptr<ChessPiece>>::iterator newEnd = std::remove_if(
+    std::vector<std::weak_ptr<BaseChessPiece>>::iterator newEnd = std::remove_if(
         weakCurChessPieces.begin(), 
         weakCurChessPieces.end(), 
-        [&removingChessPiece, this] (const std::weak_ptr<ChessPiece>& item){
+        [&removingChessPiece, this] (const std::weak_ptr<BaseChessPiece>& item){
             return removingChessPiece == GetRealPointerOfChessPiece(item); 
         });
     weakCurChessPieces.erase(newEnd, weakCurChessPieces.end());
 }
 
-void Chessboard::Update()
+void Chessboard::Update() const
 {
     PrintChessboard();
 }
@@ -110,7 +110,7 @@ void Chessboard::PrintChessboard() const
 	std::wcout << std::wstring(_edgeLength, Parts::HORIZONTAL_BORDER);
 	std::wcout << Parts::TOP_RIGHT_CORNER << std::endl;
 
-	for (std::size_t i = 0; i < _edgeLength; ++i)
+	for (int i = 0; i < _edgeLength; ++i)
 	{
 		std::wcout << Parts::VERTICAL_BORDER;
 		std::copy(_wcharChessboard.begin() + i * _edgeLength, _wcharChessboard.begin() + (i + 1) * _edgeLength, std::ostream_iterator<wchar_t, wchar_t>(std::wcout));
@@ -122,7 +122,7 @@ void Chessboard::PrintChessboard() const
 	std::wcout << Parts::BOTTOM_RIGHT_CORNER << std::flush;
 }
 
-std::shared_ptr<ChessPiece> Chessboard::GetRealPointerOfChessPiece(std::weak_ptr<ChessPiece> weakChessPiece) const
+std::shared_ptr<BaseChessPiece> Chessboard::GetRealPointerOfChessPiece(const std::weak_ptr<BaseChessPiece>& weakChessPiece) const
 {
     auto realChessPiece = weakChessPiece.lock();
     if (realChessPiece == nullptr)

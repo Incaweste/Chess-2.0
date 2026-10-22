@@ -16,8 +16,8 @@ public:
     GameManagement(int edgeLength, int chessPiecesValue);
     ~GameManagement();
     void Update();
-    Chessboard& GetChessboard();
+    Chessboard& GetChessboard() const;
 private:
-    void ClearConsole();
+    void ClearConsole() const;
     void PickUpInput();
 };

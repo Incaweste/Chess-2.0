@@ -20,13 +20,18 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="scripts\Chessboard.cpp" />
-    <ClCompile Include="scripts\ChessPiece.cpp" />
+    <ClCompile Include="scripts\BaseChessPiece.cpp" />
     <ClCompile Include="scripts\GameManagement.cpp" />
     <ClCompile Include="scripts\main.cpp" />
+    <ClCompile Include="scripts\Pawn.cpp" />
+    <ClCompile Include="scripts\Rook.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="scripts\Chessboard.h" />
-    <ClInclude Include="scripts\ChessPiece.h" />
+    <ClInclude Include="scripts\BaseChessPiece.h" />
+    <ClInclude Include="scripts\Pawn.h" />
+    <ClInclude Include="scripts\Rook.h" />
+    <ClInclude Include="scripts\PiecePosition.h" />
     <ClInclude Include="scripts\GameManagement.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

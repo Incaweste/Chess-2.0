@@ -10,10 +10,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="scripts\main.cpp" />
+    <ClCompile Include="scripts\Pawn.cpp"><Filter>Classes</Filter></ClCompile>
+    <ClCompile Include="scripts\Rook.cpp"><Filter>Classes</Filter></ClCompile>
     <ClCompile Include="scripts\Chessboard.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
-    <ClCompile Include="scripts\ChessPiece.cpp">
+    <ClCompile Include="scripts\BaseChessPiece.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
     <ClCompile Include="scripts\GameManagement.cpp">
@@ -24,7 +26,10 @@
     <ClInclude Include="scripts\Chessboard.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="scripts\ChessPiece.h">
+    <ClInclude Include="scripts\Pawn.h"><Filter>Headers</Filter></ClInclude>
+    <ClInclude Include="scripts\Rook.h"><Filter>Headers</Filter></ClInclude>
+    <ClInclude Include="scripts\PiecePosition.h"><Filter>Headers</Filter></ClInclude>
+    <ClInclude Include="scripts\BaseChessPiece.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="scripts\GameManagement.h">

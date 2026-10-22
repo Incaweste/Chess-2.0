@@ -5,7 +5,7 @@
 #include <memory>
 #include <stdexcept>
 #include <vector>
-#include "ChessPiece.h"
+#include "BaseChessPiece.h"
 
 class Chessboard
 {
@@ -26,19 +26,19 @@ private:
     int _whiteChessPiecesValue = 0;
     int _blackChessPiecesValue = 0;
 
-    std::vector<std::weak_ptr<ChessPiece>> _whiteChessPieces;
-    std::vector<std::weak_ptr<ChessPiece>> _blackChessPieces;
+    std::vector<std::weak_ptr<BaseChessPiece>> _whiteChessPieces;
+    std::vector<std::weak_ptr<BaseChessPiece>> _blackChessPieces;
     std::vector<wchar_t> _wcharChessboard;
 
 public:
     Chessboard(int edgeLength, int maxChessPiecesValue);
     ~Chessboard();
-    std::vector<std::weak_ptr<ChessPiece>> GetWhiteChessPieces();
-    std::vector<std::weak_ptr<ChessPiece>> GetBlackChessPieces();
-    void AddChessPiece(std::weak_ptr<ChessPiece> ChessPiece);
-    void RemoveChessPiece(std::weak_ptr<ChessPiece> removingChessPiece);
-    void Update();
+    std::vector<std::weak_ptr<BaseChessPiece>> GetWhiteChessPieces() const;
+    std::vector<std::weak_ptr<BaseChessPiece>> GetBlackChessPieces() const;
+    void AddChessPiece(const std::weak_ptr<BaseChessPiece>& weakNewChessPiece);
+    void RemoveChessPiece(const std::weak_ptr<BaseChessPiece>& weakRemovingChessPiece);
+    void Update() const;
 private:
     void PrintChessboard() const;
-    std::shared_ptr<ChessPiece> GetRealPointerOfChessPiece(std::weak_ptr<ChessPiece> weakChessPiece) const;
+    std::shared_ptr<BaseChessPiece> GetRealPointerOfChessPiece(const std::weak_ptr<BaseChessPiece>& weakChessPiece) const;
 };
