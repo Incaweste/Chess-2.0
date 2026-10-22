@@ -13,5 +13,3 @@ dotnet run --project "lab work on c#/ChessApp.csproj" -c Release --no-build --no
 `MemberwiseClone()` делит `PiecePosition` с оригиналом; конструктор копирования и `Clone()` создают отдельную позицию.
 В выводе: `Shallow: original = 16, copy = 16`, `Deep: original = 16, copy = 24`.
 `using IssueLog` закрывает журнал при завершении программы.
-
-Общий отчёт по C++ и C#: [report.pdf](report.pdf).
