@@ -13,5 +13,3 @@ g++ -std=c++20 main.cpp GameManagement.cpp Chessboard.cpp BaseChessPiece.cpp Paw
 Программа показывает конструкторы, копирование и перемещение, полиморфизм, обработку строк и размещение фигур на доске, затем завершается без ввода.
 Поверхностная копия делит `PiecePosition` с оригиналом; конструктор копирования и `Clone()` создают отдельную позицию.
 В выводе: `Shallow: original = 16, copy = 16`, `Deep: original = 16, copy = 24`.
-
-Общий отчёт по C++ и C#: [report.pdf](report.pdf).

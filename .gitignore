@@ -33,3 +33,10 @@ obj/
 CMakeFiles/
 CMakeCache.txt
 cmake_install.cmake
+# --- Файлы проектов IDE ---
+*.sln
+*.slnx
+*.vcxproj
+*.vcxproj.filters
+# --- Отчёты ---
+*.pdf
