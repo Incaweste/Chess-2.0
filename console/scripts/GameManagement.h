@@ -6,6 +6,7 @@
 
 #include "IUpdatable.h"
 #include "Chessboard.h"
+#include "FrameForInfoWindow.h"
 #include "Console.h"
 
 class GameManagement : public IUpdatable
@@ -17,7 +18,9 @@ private:
     static inline int _minColCnt = 52;
 
     //DEBUG
-    Chessboard* _chessboard;
+    //Chessboard* _chessboard;
+    std::unique_ptr<MainMenuWindow> _mainMenuWindow;
+    std::unique_ptr<FrameForInfoWindow> _frameInfoWindow;
 public:
     GameManagement(const GameManagement& other) = delete;
     static GameManagement& GetGameManagement();

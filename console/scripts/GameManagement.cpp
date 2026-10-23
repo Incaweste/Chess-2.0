@@ -1,12 +1,17 @@
 #include "GameManagement.h"
 GameManagement::GameManagement()
 {
-	_chessboard = new Chessboard(8);
+	//_chessboard = new Chessboard(8);
+	_mainMenuWindow = std::make_unique<MainMenuWindow>();
+	_frameInfoWindow =
+        std::make_unique<FrameForInfoWindow>(*_mainMenuWindow);
+
+	Console::RefreshConsole();
 }
 
 GameManagement::~GameManagement()
 {
-	delete _chessboard;
+	//delete _chessboard;
 }
 
 GameManagement& GameManagement::GetGameManagement()
@@ -23,12 +28,24 @@ void GameManagement::SetGUIConfines(int rowCnt, int colCnt)
 
 void GameManagement::Update()
 {
+	bool wasConsoleFit = false;
 	while (_isGameRunning)
 	{
 		Console::ResetCaret();
-		if (Console::IsThisFitInConsole(_minRowCnt, _minColCnt))
+
+		bool isConsoleFit =
+            Console::IsThisFitInConsole(_minRowCnt, _minColCnt);
+
+		if (isConsoleFit != wasConsoleFit)
 		{
-			_chessboard->Update();
+			Console::RefreshConsole();
+			wasConsoleFit = isConsoleFit;
+		}
+
+		if (isConsoleFit)
+		{
+			//_chessboard->Update();
+			_frameInfoWindow->Update();
 		}
 		else
 			std::wcout << L"Not enough space for GUI\033[J" << std::flush;
