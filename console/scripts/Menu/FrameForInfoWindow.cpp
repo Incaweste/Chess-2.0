@@ -5,12 +5,12 @@ FrameForInfoWindow::~FrameForInfoWindow() = default;
 FrameForInfoWindow::FrameForInfoWindow(const InfoWindowBase& window, bool isActive)
     : _window{window},
     _isActive{isActive}, 
-    _countRows{window.GetCountRows()},
+    _countWindowRows{window.GetCountRows()},
     _titleLength{window.GetTitleLength()}
 {
     short spaceLeftAboveInterval = 2;
     short aboveRightBelowInterval = 2;
-    _totalHeight = _countRows + spaceLeftAboveInterval + aboveRightBelowInterval;
+    _totalHeight = _countWindowRows + spaceLeftAboveInterval + aboveRightBelowInterval;
     _totalWidth = window.GetMaxWidth() + spaceLeftAboveInterval + aboveRightBelowInterval;
 }
 
@@ -61,29 +61,4 @@ void FrameForInfoWindow::PrintFrame() const
         << std::wstring(_totalWidth, FrameParts::BOTTOM_BORDER)
         << FrameParts::BOTTOM_RIGHT_CORNER
         << std::flush;
-}
-
-void FrameForInfoWindow::PrintContent() const
-{
-    // Debug
-    const auto& title = _window.GetTitle();
-    const auto& items = _window.GetItems();
-
-    int titleX = _shiftAlongX
-        + 1
-        + (_totalWidth - static_cast<int>(title.length())) / 2;
-
-    MoveCaret(titleX, _shiftAlongY + 2);
-    std::wcout << title;
-
-    for (size_t i = 0; i < items.size(); ++i)
-    {
-        int itemX = _shiftAlongX + 3;
-        int itemY = _shiftAlongY + 4 + static_cast<int>(i);
-
-        MoveCaret(itemX, itemY);
-        std::wcout << items[i];
-    }
-
-    std::wcout << std::flush;
 }

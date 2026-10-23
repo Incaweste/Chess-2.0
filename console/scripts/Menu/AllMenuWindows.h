@@ -1,3 +1,4 @@
 #pragma once
 
-#include "MainMenuWindow.h"
+#include "MainMenuContent.h"
+#include "MainMenuFrame.h"

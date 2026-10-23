@@ -2,27 +2,31 @@
 
 #include <iostream>
 
-#include "AllMenuWindows.h"
+#include "InfoWindowBase.h"
 #include "IUpdatable.h"
 
 class FrameForInfoWindow : public IUpdatable
 {
-private:
-    bool _isActive;
+protected:
     const InfoWindowBase& _window;
     int _totalWidth = 20;
-    int _countRows = 6;
-    int _titleLength = 14;
-    int _totalHeight = 10;
     int _shiftAlongX = 1;
     int _shiftAlongY = 1;
 
+private:
+    bool _isActive;
+    int _countWindowRows = 6;
+    int _titleLength = 14;
+    int _totalHeight = 10;
+
 public:
     FrameForInfoWindow(const InfoWindowBase& window, bool isActive = true);
-    ~FrameForInfoWindow();
+    virtual ~FrameForInfoWindow();
 
-    void PrintContent() const;
+    virtual void PrintContent() const = 0;
+
     void Update() override;
+
     void PrintFrame() const;
     void MoveCaret(int shiftAlongX, int shiftAlongY) const;
     void SetShift(int shiftAlongX, int shiftAlongY);
