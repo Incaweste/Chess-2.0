@@ -23,15 +23,6 @@ void FrameForInfoWindow::Update()
     }
 }
 
-void FrameForInfoWindow::MoveCaret(int shiftAlongX, int shiftAlongY) const
-{
-    std::wcout << L"\033["
-    << shiftAlongY
-    << ';'
-    << shiftAlongX
-    << "H" << std::flush;
-}
-
 void FrameForInfoWindow::SetShift(int shiftAlongX, int shiftAlongY)
 {
     _shiftAlongX = shiftAlongX;
@@ -40,7 +31,7 @@ void FrameForInfoWindow::SetShift(int shiftAlongX, int shiftAlongY)
 
 void FrameForInfoWindow::PrintFrame() const
 {
-    MoveCaret(_shiftAlongX, _shiftAlongY);
+    Console::MoveCaret(_shiftAlongX, _shiftAlongY);
 
     std::wcout << FrameParts::TOP_LEFT_CORNER
         << std::wstring(_totalWidth, FrameParts::TOP_BORDER)
@@ -48,14 +39,14 @@ void FrameForInfoWindow::PrintFrame() const
 
     for (int i = 0; i < _totalHeight; ++i)
     {
-        MoveCaret(_shiftAlongX, _shiftAlongY + 1 + i);
+        Console::MoveCaret(_shiftAlongX, _shiftAlongY + 1 + i);
 
         std::wcout << FrameParts::LEFT_BORDER;
-        MoveCaret(_shiftAlongX+_totalWidth+1, _shiftAlongY + 1 + i);
+        Console::MoveCaret(_shiftAlongX+_totalWidth+1, _shiftAlongY + 1 + i);
         std::wcout << FrameParts::RIGHT_BORDER;
     }
 
-    MoveCaret(_shiftAlongX, _shiftAlongY + _totalHeight + 1);
+    Console::MoveCaret(_shiftAlongX, _shiftAlongY + _totalHeight + 1);
 
     std::wcout << FrameParts::BOTTOM_LEFT_CORNER
         << std::wstring(_totalWidth, FrameParts::BOTTOM_BORDER)

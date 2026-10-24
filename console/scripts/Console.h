@@ -54,6 +54,7 @@ public:
     static void ResetConsoleColor();
 
     static void ResetCaret();
+    static void MoveCaret(int shiftAlongX, int shiftAlongY);
     static void RefreshConsole();
     static bool IsThisFitInConsole(int rowCnt, int colCnt);
 };

@@ -4,6 +4,7 @@
 
 #include "InfoWindowBase.h"
 #include "IUpdatable.h"
+#include "Console.h"
 
 class FrameForInfoWindow : public IUpdatable
 {
@@ -28,7 +29,6 @@ public:
     void Update() override;
 
     void PrintFrame() const;
-    void MoveCaret(int shiftAlongX, int shiftAlongY) const;
     void SetShift(int shiftAlongX, int shiftAlongY);
 
 private:
