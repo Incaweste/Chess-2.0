@@ -34,17 +34,17 @@ public:
 
     static void ResetCaret()
     {
-        std::wcout << L"\033[1;1H" << std::flush;
+        DrawWstring(L"\033[1;1H");
     }
 
     static void RefreshConsoleAfterCaret()
     {
-        std::wcout << L"\033[J" << std::flush;
+        DrawWstring(L"\033[J");
     }
 
     static void RefreshConsole()
     {
-        std::wcout << L"\033[2J\033[3J";
+        DrawWstring(L"\033[2J\033[3J");
         ResetCaret();
     }
 

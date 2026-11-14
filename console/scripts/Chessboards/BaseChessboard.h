@@ -54,10 +54,10 @@ public:
     const std::size_t CHESSBOARD_SIZE;
 
 private:
-    const RGB* _chessboardTextColor = &Color::WHITE;
-    const RGB* _chessboardBGColor = &Color::GRAY;
     const std::size_t CHESSBOARD_SQUARE;
     const Vector2 CHESSBOARD_SIZE_IN_CHARS;
+    const RGB* _chessboardTextColor = &Color::WHITE;
+    const RGB* _chessboardBGColor = &Color::GRAY;
 	std::vector<BaseBoardCell> _cells;
     ChessboardEdges _edges;
 

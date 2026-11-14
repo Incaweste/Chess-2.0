@@ -133,8 +133,8 @@ void BaseChessboard::ClearAllowedMoves()
 TextBlock BaseChessboard::BuildTextBlock(const TextBlock::RGB* textColor, const TextBlock::RGB* bgColor) const
 {
 	TextBlock boardTextBlock{
-		2 * CellsConfiguration::HORIZONTAL_EDGE_HEIGHT + CHESSBOARD_SIZE * CellsConfiguration::BASE_HEIGHT, 
-		2 * CellsConfiguration::VERTICAL_EDGE_WIDTH + CHESSBOARD_SIZE * CellsConfiguration::BASE_WIDTH,
+		CHESSBOARD_SIZE_IN_CHARS.row,
+		CHESSBOARD_SIZE_IN_CHARS.col,
 		_chessboardTextColor, 
 		_chessboardBGColor,
 		false
