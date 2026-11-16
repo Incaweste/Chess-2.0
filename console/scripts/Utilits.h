@@ -4,6 +4,8 @@
 #include <iostream>
 #include <memory>
 #include <stdexcept>
+#include <windows.h>
+#undef RGB
 
 #include "TextBlock.h"
 #include "Vector2.h"
@@ -22,10 +24,10 @@ namespace Utilits
 
     enum class DeltaMove
     {
-        UP,
-        DOWN,
-        LEFT,
-        RIGHT
+        UP = VK_UP,
+        DOWN = VK_DOWN,
+        LEFT = VK_LEFT,
+        RIGHT = VK_RIGHT
     };
 
     template <class T, class PositionOf = std::identity>

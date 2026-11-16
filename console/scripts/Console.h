@@ -15,10 +15,39 @@
 class Console
 {
 private:
-    static inline const HANDLE OUTPUT_HANDLE = GetStdHandle(STD_OUTPUT_HANDLE);
+    static constexpr DWORD MAX_EVENTS_PER_CALL = 32;
     static constexpr std::size_t MAX_WRITABLE_CHUNK_CHARS = 32 * 1024;
+    static inline const HANDLE INPUT_HANDLE = GetStdHandle(STD_INPUT_HANDLE);
+    static inline const HANDLE OUTPUT_HANDLE = GetStdHandle(STD_OUTPUT_HANDLE);
 public:
     Console() = delete;
+
+    static std::vector<KEY_EVENT_RECORD> GetKeyboardInput()
+    {
+        DWORD pendingInputEventsCount = 0;
+
+        if (!GetNumberOfConsoleInputEvents(INPUT_HANDLE, &pendingInputEventsCount))
+            throw std::system_error(static_cast<int>(GetLastError()), std::system_category(), "GetNumberOfConsoleInputEvents");
+
+        if (pendingInputEventsCount == 0)
+            return {};
+
+        DWORD readInputEventsCount = 0;
+        INPUT_RECORD inputs[MAX_EVENTS_PER_CALL]{};
+        if(!ReadConsoleInputW(INPUT_HANDLE, inputs, MAX_EVENTS_PER_CALL, &readInputEventsCount))
+            throw std::system_error(static_cast<int>(GetLastError()), std::system_category(), "ReadConsoleInputW");
+
+        std::vector<KEY_EVENT_RECORD> keyboardEvents;
+        keyboardEvents.reserve(readInputEventsCount);
+
+        for (DWORD i = 0; i < readInputEventsCount; ++i)
+        {
+            if (inputs[i].EventType == KEY_EVENT)
+                keyboardEvents.push_back(inputs[i].Event.KeyEvent);
+        }
+
+        return keyboardEvents;
+    }
 
     static bool DoesThisFitInConsole(Vector2 size)
     {

@@ -44,65 +44,53 @@ void GameManagement::Update()
 
 		Console::RefreshConsoleAfterCaret();
 
-		PickUpInput();
+		ProcessKeyboardInput(Console::GetKeyboardInput());
 	}
 }
 
-void GameManagement::PickUpInput()
+void GameManagement::ProcessKeyboardInput(std::span<const KEY_EVENT_RECORD> keyboardEvents)
 {
-	if (_kbhit())
+
+	for (const auto& event : keyboardEvents)
 	{
-		int inputCode = _getch();
-		if (inputCode == 13)
+		if (!event.bKeyDown)
+			continue;
+		for (DWORD i = 0; i < event.wRepeatCount; ++i)
 		{
-			if (_currentGameState == GameState::PIECE_SELECTION)
+			if (event.dwControlKeyState == LEFT_CTRL_PRESSED)
 			{
-				if (_chessboard->CalculateAllowedMoves())
-					_currentGameState = GameState::PATH_SELECTION;
-			}
-		}
-		else if (inputCode == 27)
-		{
-			if (_currentGameState == GameState::PATH_SELECTION)
-			{
-				_currentGameState = GameState::PIECE_SELECTION;
-				_chessboard->ClearAllowedMoves();
+				if (event.wVirtualKeyCode == VK_F5)
+					Console::RefreshConsole();
 			}
 			else
-				_currentGameState = GameState::OFF;
-		}
-		else if (inputCode == 0 || inputCode == 224)
-		{
-			inputCode = _getch();
-			if(inputCode == 98)
-				Console::RefreshConsole();
-			else if (inputCode == 72)
 			{
-				if (_currentGameState == GameState::PIECE_SELECTION)
-					_activePlayer->GoToNextSelection(Utilits::DeltaMove::UP);
-				else if (_currentGameState == GameState::PATH_SELECTION)
-					_chessboard->SetNextMarkedCell(Utilits::DeltaMove::UP);
-			}
-			else if(inputCode == 75)
-			{
-				if (_currentGameState == GameState::PIECE_SELECTION)
-					_activePlayer->GoToNextSelection(Utilits::DeltaMove::LEFT);
-				else if (_currentGameState == GameState::PATH_SELECTION)
-					_chessboard->SetNextMarkedCell(Utilits::DeltaMove::LEFT);
-			}
-			else if(inputCode == 77)
-			{
-				if (_currentGameState == GameState::PIECE_SELECTION)
-					_activePlayer->GoToNextSelection(Utilits::DeltaMove::RIGHT);
-				else if (_currentGameState == GameState::PATH_SELECTION)
-					_chessboard->SetNextMarkedCell(Utilits::DeltaMove::RIGHT);
-			}
-			else if (inputCode == 80)
-			{
-				if (_currentGameState == GameState::PIECE_SELECTION)
-					_activePlayer->GoToNextSelection(Utilits::DeltaMove::DOWN);
-				if (_currentGameState == GameState::PATH_SELECTION)
-					_chessboard->SetNextMarkedCell(Utilits::DeltaMove::DOWN);
+				if (event.wVirtualKeyCode == VK_RETURN)
+				{
+
+					if (_currentGameState == GameState::PIECE_SELECTION)
+					{
+						if (_chessboard->CalculateAllowedMoves())
+							_currentGameState = GameState::PATH_SELECTION;
+					}
+				}
+				else if (event.wVirtualKeyCode == VK_ESCAPE)
+				{
+					if (_currentGameState == GameState::PATH_SELECTION)
+					{
+						_currentGameState = GameState::PIECE_SELECTION;
+						_chessboard->ClearAllowedMoves();
+					}
+					else
+						_currentGameState = GameState::OFF;
+				}
+				else if (VK_LEFT <= event.wVirtualKeyCode && event.wVirtualKeyCode <= VK_DOWN)
+				{
+					const Utilits::DeltaMove direction = static_cast<Utilits::DeltaMove>(event.wVirtualKeyCode);
+					if (_currentGameState == GameState::PIECE_SELECTION)
+						_activePlayer->GoToNextSelection(direction);
+					else if (_currentGameState == GameState::PATH_SELECTION)
+						_chessboard->SetNextMarkedCell(direction);
+				}
 			}
 		}
 	}

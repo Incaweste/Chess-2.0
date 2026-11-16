@@ -1,7 +1,9 @@
 #pragma once
 
-#include <conio.h>
 #include <iostream>
+#include <windows.h>
+#undef RGB
+
 #include "BaseChessboard.h"
 #include "Blinkable.h"
 #include "Console.h"
@@ -45,5 +47,5 @@ private:
     GameManagement() noexcept = default;
     ~GameManagement() noexcept = default;
     
-    void PickUpInput();
+    void ProcessKeyboardInput(std::span<const KEY_EVENT_RECORD> keyboardEvents);
 };
