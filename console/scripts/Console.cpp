@@ -45,6 +45,15 @@ void Console::ResetCaret()
 	std::wcout << L"\033[3J\033[1;1H" << std::flush;
 }
 
+void Console::MoveCaret(int shiftAlongX, int shiftAlongY)
+{
+    std::wcout << L"\033["
+    << shiftAlongY
+    << ';'
+    << shiftAlongX
+    << "H" << std::flush;
+}
+
 void Console::RefreshConsole()
 {
     std::wcout << L"\033[2J";

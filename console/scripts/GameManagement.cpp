@@ -1,13 +1,16 @@
 #include "GameManagement.h"
+
 GameManagement::GameManagement()
 {
-	_chessboard = new Chessboard(8);
+	_mainMenu = std::make_shared<MainMenu>();
+	_startGameMenu = std::make_shared<StartGame>();
+
+	_activeWindow = _mainMenu;
+
+	Console::RefreshConsole();
 }
 
-GameManagement::~GameManagement()
-{
-	delete _chessboard;
-}
+GameManagement::~GameManagement() = default;
 
 GameManagement& GameManagement::GetGameManagement()
 {
@@ -15,41 +18,63 @@ GameManagement& GameManagement::GetGameManagement()
 	return gameManagement;	
 }
 
-void GameManagement::SetGUIConfines(int rowCnt, int colCnt)
+void GameManagement::ProcessMenuAction(MenuAction action)
 {
-	_minRowCnt = rowCnt;
-	_minColCnt = colCnt + 1;
+	if (action == MenuAction::MainMenu)
+	{
+		_activeWindow = _mainMenu;
+	}
+	else if (action == MenuAction::StartGame)
+	{
+		_activeWindow = _startGameMenu;
+	}
+	else if (action == MenuAction::Exit)
+	{
+		_isGameRunning = false;
+	}
+
+	if (auto window = _activeWindow.lock())
+		window->NowActive();
 }
 
 void GameManagement::Update()
 {
+	bool wasConsoleFit = false;
 	while (_isGameRunning)
 	{
 		Console::ResetCaret();
-		if (Console::IsThisFitInConsole(_minRowCnt, _minColCnt))
+
+		bool isConsoleFit = false;
+		auto window = _activeWindow.lock();
+		
+		if (window)
+        {
+            isConsoleFit = Console::IsThisFitInConsole(
+                window->GetRequiredHeight(),
+                window->GetRequiredWidth()
+            );
+        }
+
+		if (isConsoleFit != wasConsoleFit)
 		{
-			_chessboard->Update();
+			Console::RefreshConsole();
+			wasConsoleFit = isConsoleFit;
+		}
+
+		if (isConsoleFit && window)
+		{
+			window->Update();
+
+			if (auto menu = std::dynamic_pointer_cast<IMenuInput>(window))
+			{
+			    if (auto action = menu->HandleMenuSelect())
+			        ProcessMenuAction(*action);
+			}
 		}
 		else
 			std::wcout << L"Not enough space for GUI\033[J" << std::flush;
 
 		std::this_thread::sleep_for(_FRAME_DELAY_MIL_SEC);
-		PickUpInput();
 	}
-}
-
-void GameManagement::PickUpInput()
-{
-	if (_kbhit())
-	{
-		int inputCode = _getch();
-		if (inputCode == 27)
-			_isGameRunning = false;
-		else if (inputCode == 0 || inputCode == 224)
-		{
-			inputCode = _getch();
-			if(inputCode == 98)
-				Console::RefreshConsole();
-		}
-	}
+	Console::RefreshConsole();
 }

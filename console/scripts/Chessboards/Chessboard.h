@@ -25,6 +25,9 @@ public:
 
 	void Update() override;
 
+    int GetWidth() const;
+    int GetHeight() const;
+
 private: 
 	void BuildChessboard();
 	void PrintChessboard() const;

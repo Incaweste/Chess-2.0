@@ -18,6 +18,16 @@ void Chessboard::Update()
 	}
 }
 
+int Chessboard::GetWidth() const
+{
+	return _totalWidth;
+}
+
+int Chessboard::GetHeight() const
+{
+	return _totalHeight;
+}
+
 void Chessboard::BuildChessboard()
 {
 	_cells.resize(_chessBoardSize*_chessBoardSize);
