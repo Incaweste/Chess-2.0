@@ -11,6 +11,7 @@ int main()
         throw std::runtime_error("_O_U16TEXT mode didn't set.");
 
     GameManagement& gameManagement = GameManagement::GetGameManagement();
+    gameManagement.StartGame();
     gameManagement.Update();
     return 0;
 }
