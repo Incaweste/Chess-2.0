@@ -8,6 +8,12 @@
 struct TextBlock
 {
 public:
+    enum class ColorTarget
+    {
+        TEXT,
+        BACKGROUND
+    };
+
     struct RGB;
     struct Color;
     class Line;
@@ -74,9 +80,18 @@ public:
         std::size_t charsCount = 1, 
         wchar_t character = L' '
     );
+    constexpr void AddCharsForAllLines(std::size_t charsCount = 1, wchar_t character = L' ');
     constexpr void AddLines(std::size_t count);
     constexpr void RemoveLines(std::size_t startIndex, std::size_t count = 1);
     constexpr void MergeWithTextBlock(const TextBlock& mergingLines, std::size_t startIndexInMain = 0);
+
+    void SetActiveColorForSeveralLines(
+        std::size_t startIndex, 
+        std::size_t linesCount,
+        ColorTarget target,
+        const RGB* color
+    );
+    void SetActiveColorForAllLines(ColorTarget target, const RGB* color);
 };
 
 #include "RGB.inl"

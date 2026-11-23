@@ -9,8 +9,8 @@ GameManagement& GameManagement::GetGameManagement() noexcept
 void GameManagement::StartGame()
 {
 	_chessboard = std::make_shared<BaseChessboard>(8);
-	_activePlayer = std::make_unique<Player>(_chessboard, true);
-	_inactivePlayer = std::make_unique<Player>(_chessboard, false);
+	_activePlayer = std::make_unique<Player>(true, _chessboard);
+	_inactivePlayer = std::make_unique<Player>(false, _chessboard);
 
 	_activePlayer->ActivateSelection();
 }
@@ -71,6 +71,18 @@ void GameManagement::ProcessKeyboardInput(std::span<const KEY_EVENT_RECORD> keyb
 					{
 						if (_chessboard->CalculateAllowedMoves())
 							_currentGameState = GameState::PATH_SELECTION;
+					}
+					else if (_currentGameState == GameState::PATH_SELECTION)
+					{
+						if (_chessboard->ConfirmBothSelectedCells())
+						{
+							_inactivePlayer->EraseNecessaryPieces();
+							_activePlayer->DeactivateSelection();
+							_activePlayer.swap(_inactivePlayer);
+							_activePlayer->ActivateSelection();
+							_chessboard->SetIsInverted(!_activePlayer->IS_ON_WHITE_TEAM);
+							_currentGameState = GameState::PIECE_SELECTION;
+						}
 					}
 				}
 				else if (event.wVirtualKeyCode == VK_ESCAPE)

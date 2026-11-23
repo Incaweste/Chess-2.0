@@ -1,17 +1,4 @@
 #include "BaseBoardCell.h"
-BaseBoardCell::BaseBoardCell(const RGB* cellColor) : BaseCell{cellColor}
-{
-}
-
-BaseBoardCell::BaseBoardCell(const RGB* cellColor, std::weak_ptr<ChessPiece> piece) : BaseBoardCell{cellColor} 
-{
-    SetPieceOnCell(piece);
-}
-
-std::shared_ptr<ChessPiece> BaseBoardCell::GetChessPiece() const noexcept
-{
-    return _piece.lock();
-}
 
 void BaseBoardCell::SetSelection(bool isSelected)
 {
@@ -26,7 +13,7 @@ void BaseBoardCell::SetSelection(bool isSelected)
     _isSelected = isSelected;
 }
 
-void BaseBoardCell::SetMark(bool isMarked)
+void BaseBoardCell::SetMark(bool isMarked) noexcept
 {
     auto realPiece = _piece.lock();
     if (realPiece != nullptr)
@@ -36,19 +23,14 @@ void BaseBoardCell::SetMark(bool isMarked)
     SetSelection(_isSelected);
 }
 
-void BaseBoardCell::SetPieceOnCell(std::weak_ptr<ChessPiece> piece) noexcept
+TextBlock BaseBoardCell::BuildTextBlock(const TextBlock::RGB* outsideTextColor, const TextBlock::RGB* outsideBGColor) const
 {
-    _piece = piece;
-}
-
-TextBlock BaseBoardCell::BuildTextBlock(const RGB* textColor, const RGB* bgColor) const
-{
-    TextBlock textBlock{HEIGHT, WIDTH, textColor, bgColor, true};
+    TextBlock textBlock{HEIGHT, WIDTH, outsideTextColor, outsideBGColor, true};
     
     for (std::size_t i = 0; i < HEIGHT; ++i)
     {
         auto& curLine = textBlock[i];
-        bool isSuccess = curLine.TrySetActiveColor(Line::ColorTarget::TEXT, _cellColor);
+        bool isSuccess = curLine.TrySetActiveColor(TextBlock::ColorTarget::TEXT, _cellColor);
 
         if (i == 0)
         {
@@ -76,12 +58,12 @@ TextBlock BaseBoardCell::BuildTextBlock(const RGB* textColor, const RGB* bgColor
             {
                 if (_isSelected)
                 {
-                    auto curCellColor = curLine.GetActiveColor(Line::ColorTarget::TEXT);
-                    bool isSuccessOfMark = curLine.TrySetActiveColor(Line::ColorTarget::TEXT, SELECTED_CELL_COLOR);  
+                    auto curCellColor = curLine.GetActiveColor(TextBlock::ColorTarget::TEXT);
+                    bool isSuccessOfMark = curLine.TrySetActiveColor(TextBlock::ColorTarget::TEXT, SELECTED_CELL_COLOR);  
                     curLine += CHARACTER_MARK;
 
                     if(isSuccessOfMark)
-                        curLine.TrySetActiveColor(Line::ColorTarget::TEXT, curCellColor);
+                        curLine.TrySetActiveColor(TextBlock::ColorTarget::TEXT, curCellColor);
                 }
                 else
                     curLine += CHARACTER_MARK;
@@ -94,7 +76,7 @@ TextBlock BaseBoardCell::BuildTextBlock(const RGB* textColor, const RGB* bgColor
         }
 
         if (isSuccess)
-            curLine.SetActiveColorToDefault(Line::ColorTarget::TEXT);
+            curLine.SetActiveColorToDefault(TextBlock::ColorTarget::TEXT);
     }
     return textBlock;
 }

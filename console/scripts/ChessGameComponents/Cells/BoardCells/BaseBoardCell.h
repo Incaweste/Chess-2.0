@@ -38,14 +38,19 @@ private:
 
 public:
     BaseBoardCell() = default;
-    explicit BaseBoardCell(const RGB* cellColor);
-    BaseBoardCell(const RGB* cellColor, std::weak_ptr<ChessPiece> piece);
-    std::shared_ptr<ChessPiece> GetChessPiece() const noexcept;
+    constexpr explicit BaseBoardCell(const RGB* cellColor) : BaseCell{cellColor}
+    {
+    }
+    inline BaseBoardCell(const RGB* cellColor, std::weak_ptr<ChessPiece> piece);
+    inline std::shared_ptr<ChessPiece> GetChessPiece() const noexcept;
     void SetSelection(bool isSelected) override;
-    void SetMark(bool isMakred);
-    void SetPieceOnCell(std::weak_ptr<ChessPiece> piece) noexcept;
+    void SetMark(bool isMakred) noexcept;
+    inline void SetPieceOnCell(std::weak_ptr<ChessPiece> piece) noexcept;
+    inline void RemovePieceFromCell() noexcept;
 
-    TextBlock BuildTextBlock(const RGB* textColor, const RGB* bgColor) const override;
+    TextBlock BuildTextBlock(const TextBlock::RGB* outsideTextColor, const TextBlock::RGB* outsideBGColor) const override;
 
     void Update() override;
 };
+
+#include "BaseBoard.inl"

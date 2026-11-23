@@ -1,5 +1,29 @@
 #include "TextBlock.h"
 
+void TextBlock::SetActiveColorForSeveralLines(
+    std::size_t startIndex, 
+    std::size_t linesCount,
+    ColorTarget target,
+    const RGB* color
+)
+{
+    std::size_t maxLinesCount = _lines.size();
+    if (startIndex < maxLinesCount)
+    {
+        std::size_t endIndex = startIndex + linesCount;
+        if (endIndex > maxLinesCount)
+            endIndex = maxLinesCount;
+
+        for (std::size_t i = startIndex; i < endIndex; ++i)
+            _lines[i].TrySetActiveColor(target, color);
+    }
+}
+
+void TextBlock::SetActiveColorForAllLines(ColorTarget target, const RGB* color)
+{
+    SetActiveColorForSeveralLines(0, _lines.size(), target, color);
+}
+
 bool TextBlock::Line::TrySetActiveColor(ColorTarget target, const RGB* activeColor)
 {
     return GetColorHandler(target).TrySetActiveColor(*this, activeColor);

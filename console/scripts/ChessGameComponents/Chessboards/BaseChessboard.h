@@ -56,10 +56,14 @@ public:
 private:
     const std::size_t CHESSBOARD_SQUARE;
     const Vector2 CHESSBOARD_SIZE_IN_CHARS;
+    const std::size_t BOTTOM_EDGE_ROW_INDEX;
+    const std::size_t LAST_INDEX_IN_EDGE;
     const RGB* _chessboardTextColor = &Color::WHITE;
     const RGB* _chessboardBGColor = &Color::GRAY;
+
 	std::vector<BaseBoardCell> _cells;
     ChessboardEdges _edges;
+    bool _isInverted = false;
 
     int _selectedCellIndex = -1;
     int _selectedMarkedCellIndex = -1;
@@ -67,35 +71,40 @@ private:
     std::vector<Vector2> _positionsOfMarkedCells{};
 
 public:
-	explicit BaseChessboard(std::size_t chessboardSize);
-    BaseChessboard(std::size_t chessboardSize, Corners corners);
+	constexpr explicit BaseChessboard(std::size_t chessboardSize);
+    constexpr BaseChessboard(std::size_t chessboardSize, Corners corners);
     virtual ~BaseChessboard() = default;
 
-    std::size_t GetChessboardSize() const noexcept;
-    void SetPieceOnCell(std::weak_ptr<ChessPiece> chessPiece, Vector2 position) noexcept;
+    constexpr std::size_t GetChessboardSize() const noexcept;
+    constexpr Vector2 GetSizeInChars() const noexcept override;
+    constexpr void SetIsInverted(bool isInverted) noexcept;
+    inline void SetPieceOnCell(const std::shared_ptr<ChessPiece>& chessPiece, Vector2 position, bool isPlayerMove) noexcept;
+
     void SetSelectedCell(Vector2 position);
     void SetNextMarkedCell(Utilits::DeltaMove direction);
 
-    Vector2 GetSizeInChars() const noexcept override;
-
     [[nodiscard]] 
     bool CalculateAllowedMoves();
-    
     void ClearAllowedMoves();
 
-    TextBlock BuildTextBlock(const TextBlock::RGB* textColor, const TextBlock::RGB* bgColor) const override;
+    bool ConfirmBothSelectedCells();
+ 
+    TextBlock BuildTextBlock(const TextBlock::RGB* outsideTextColor, const TextBlock::RGB* outsideBGColor) const override;
 private:
-	void BuildChessboard();
+	constexpr void BuildChessboard();
+
+    constexpr void SetEdgesSelection(Vector2 intersection, bool isSelected) noexcept;
+    constexpr void SetEdgesSelection(std::size_t intersectionIndex, bool isSelected) noexcept;
+
+    constexpr Vector2 CalculateCellPosition(std::size_t index) const noexcept;
+    constexpr std::size_t CalculateCellIndex(Vector2 cellPosition) const noexcept; 
 
     void SetCellSelection(std::size_t cellIndex, bool isSelected);
-    void SetEdgesSelection(Vector2 intersection, bool isSelected);
-    void SetEdgesSelection(std::size_t intersectionIndex, bool isSelected);
     void SetMarkAlongEntireVectorOfMarkedCells(bool isMarked);
-
-    inline Vector2 CalculateCellPosition(std::size_t index) const noexcept;
-    inline std::size_t CalculateCellIndex(Vector2 cellPosition) const noexcept; 
 
     void SortPositionsOfMarkedCells();
 
     TextBlock BuildHorizontalEdge(bool isTopEdge) const;
 };
+
+#include "BaseChessboard.inl"

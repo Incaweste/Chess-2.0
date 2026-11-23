@@ -19,19 +19,19 @@ private:
     const std::size_t FILLED_LINE;
     const std::size_t MARKED_LINE;
 public:
-    HorizontalEdgeCell(wchar_t edgeChar, wchar_t markedLetter, const RGB* cellColor, Type sideType) :     
+    constexpr HorizontalEdgeCell(wchar_t edgeChar, wchar_t markedLetter, const RGB* cellColor, Type sideType) :     
         BaseEdgeCell{edgeChar, cellColor}, MARKED_LETTER{markedLetter}, SIDE_TYPE{sideType},
         FILLED_LINE{SIDE_TYPE == Type::TOP ? HEIGHT - 1 : 0}, MARKED_LINE{SIDE_TYPE == Type::TOP ? HEIGHT - 2 : 1}
     {   
     }
-    HorizontalEdgeCell(wchar_t edgeChar, wchar_t markedLetter, Type sideType) : 
+    constexpr HorizontalEdgeCell(wchar_t edgeChar, wchar_t markedLetter, Type sideType) : 
         HorizontalEdgeCell{edgeChar, markedLetter, nullptr, sideType}
     {
     }
 
-    TextBlock BuildTextBlock(const RGB* textColor, const RGB* bgColor) const override
+    TextBlock BuildTextBlock(const TextBlock::RGB* outsideTextColor, const TextBlock::RGB* outsideBGColor) const override
     {
-        TextBlock textBlock{HEIGHT, WIDTH, textColor, bgColor, true};
+        TextBlock textBlock{HEIGHT, WIDTH, outsideTextColor, outsideBGColor, true};
 
         for (std::size_t i = 0; i < HEIGHT; ++i)
         {

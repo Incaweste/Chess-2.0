@@ -26,23 +26,23 @@ private:
     const RGB* _unselectedCellColor;
 
 public:
-    explicit BaseCell(const RGB* cellColor) noexcept : _unselectedCellColor{cellColor} 
+    constexpr explicit BaseCell(const RGB* cellColor) noexcept : _unselectedCellColor{cellColor} 
     {
         SetSelection(false);
     }
 
-    BaseCell() noexcept : BaseCell{nullptr}
+    constexpr BaseCell() noexcept : BaseCell{nullptr}
     {
     }
     
-    virtual ~BaseCell() = default;
+    constexpr virtual ~BaseCell() noexcept = default;
 
-    void SetCellColor(const RGB* cellColor) noexcept
+    constexpr void SetCellColor(const RGB* cellColor) noexcept
     {
         _unselectedCellColor = cellColor;
     }
 
-    virtual void SetSelection(bool isSelected)
+    constexpr virtual void SetSelection(bool isSelected)
     {
         _cellColor = isSelected ? SELECTED_CELL_COLOR : _unselectedCellColor;
     }

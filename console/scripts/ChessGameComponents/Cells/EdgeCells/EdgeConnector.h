@@ -15,18 +15,18 @@ private:
     const Type CONNECTOR_TYPE;
     const std::size_t FILLED_LINE;
 public:
-    EdgeConnector(wchar_t edgeChar, const RGB* cellColor, Type connectorType):
+    constexpr EdgeConnector(wchar_t edgeChar, const RGB* cellColor, Type connectorType):
         BaseEdgeCell{edgeChar, cellColor}, CONNECTOR_TYPE{connectorType}, FILLED_LINE{CONNECTOR_TYPE == Type::TOP ? HEIGHT - 1 : 0}
     {
     }
 
-    EdgeConnector(wchar_t edgeChar, Type connectorType) : EdgeConnector{edgeChar, nullptr, connectorType}
+    constexpr EdgeConnector(wchar_t edgeChar, Type connectorType) : EdgeConnector{edgeChar, nullptr, connectorType}
     {
     }
 
-    TextBlock BuildTextBlock(const RGB* textColor, const RGB* bgColor) const override
+    TextBlock BuildTextBlock(const TextBlock::RGB* outsideTextColor, const TextBlock::RGB* outsideBGColor) const override
     {
-        TextBlock textBlock{HEIGHT, WIDTH, textColor, bgColor, true};
+        TextBlock textBlock{HEIGHT, WIDTH, outsideTextColor, outsideBGColor, true};
 
         for (std::size_t i = 0; i < HEIGHT; ++i)
         {

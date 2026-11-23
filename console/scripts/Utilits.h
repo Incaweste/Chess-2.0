@@ -3,6 +3,7 @@
 #include <format>
 #include <iostream>
 #include <memory>
+#include <span>
 #include <stdexcept>
 #include <windows.h>
 #undef RGB
@@ -32,11 +33,17 @@ namespace Utilits
 
     template <class T, class PositionOf = std::identity>
     requires std::invocable<PositionOf&, const T&> && std::convertible_to<std::invoke_result_t<PositionOf&, const T&>, Vector2>
-    int FindNextPositionIndex(const std::vector<T>& candidates, 
-        Vector2 current, DeltaMove direction, std::size_t chessboardSize, PositionOf positionOf = PositionOf{}) 
+    int FindNextPositionIndex(
+        std::span<const T> candidates, 
+        Vector2 current, 
+        std::size_t chessboardSize, 
+        DeltaMove direction, 
+        bool directionIsInverted = false, 
+        PositionOf positionOf = PositionOf{}) 
     {
         bool isVertical = direction == DeltaMove::UP || direction == DeltaMove::DOWN;
-        bool isTowardLower = direction == DeltaMove::UP || direction == DeltaMove::LEFT;
+
+        bool isTowardLower = (direction == DeltaMove::UP || direction == DeltaMove::LEFT) != directionIsInverted;
 
         Vector2 wrapAnchor = current;
         int oppositeEdge = isTowardLower ? chessboardSize : -1;
@@ -61,13 +68,13 @@ namespace Utilits
             if (axisDelta == 0)
                 continue;
 
-            bool wraps = (axisDelta < 0) != isTowardLower;
-            Vector2 anchor = wraps ? wrapAnchor : current;
+            bool wrap = (axisDelta < 0) != isTowardLower;
+            Vector2 anchor = wrap ? wrapAnchor : current;
             int deltaRow = position.row - anchor.row;
             int deltaCol = position.col - anchor.col;
 
             auto key = std::tuple{
-                wraps, deltaRow * deltaRow + deltaCol * deltaCol, position.row, position.col
+                wrap, deltaRow * deltaRow + deltaCol * deltaCol, position.row, position.col
             };
 
             if (bestIndex < 0 || key < bestKey)

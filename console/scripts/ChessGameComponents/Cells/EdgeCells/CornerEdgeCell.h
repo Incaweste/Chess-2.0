@@ -18,19 +18,19 @@ private:
     const Type CORNER_TYPE;
     const std::size_t FILLED_LINE;
 public:
-    CornerEdgeCell(wchar_t edgeChar, const RGB* cellColor, Type cornerType) : 
+    constexpr CornerEdgeCell(wchar_t edgeChar, const RGB* cellColor, Type cornerType) : 
         BaseEdgeCell{edgeChar, cellColor}, 
         CORNER_TYPE{cornerType}, FILLED_LINE {CORNER_TYPE == Type::TOP_LEFT || CORNER_TYPE == Type::TOP_RIGHT ? HEIGHT - 1 : 0}
     {
     }
 
-    CornerEdgeCell(wchar_t edgeChar, Type cornerType) : CornerEdgeCell{edgeChar, nullptr, cornerType}
+    constexpr CornerEdgeCell(wchar_t edgeChar, Type cornerType) : CornerEdgeCell{edgeChar, nullptr, cornerType}
     {
     }
 
-    TextBlock BuildTextBlock(const RGB* textColor, const RGB* bgColor) const override
+    TextBlock BuildTextBlock(const TextBlock::RGB* outsideTextColor, const TextBlock::RGB* outsideBGColor) const override
     {
-        TextBlock textBlock{HEIGHT, WIDTH, textColor, bgColor, true};
+        TextBlock textBlock{HEIGHT, WIDTH, outsideTextColor, outsideBGColor, true};
 
         for (std::size_t i = 0; i < HEIGHT; ++i)
         {

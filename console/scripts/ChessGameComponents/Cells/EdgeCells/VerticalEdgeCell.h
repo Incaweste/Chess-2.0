@@ -31,9 +31,9 @@ public:
     {
     }
 
-    TextBlock BuildTextBlock(const RGB* textColor, const RGB* bgColor) const override
+    TextBlock BuildTextBlock(const TextBlock::RGB* outsideTextColor, const TextBlock::RGB* outsideBGColor) const override
     {
-        TextBlock textBlock{HEIGHT, WIDTH, textColor, bgColor, true};
+        TextBlock textBlock{HEIGHT, WIDTH, outsideTextColor, outsideBGColor, true};
 
         for (std::size_t i = 0; i < HEIGHT; ++i)
         {

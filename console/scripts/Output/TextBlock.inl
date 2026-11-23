@@ -15,8 +15,8 @@ constexpr TextBlock::TextBlock(
         _lines.emplace_back(defaultTextColor, defaultBGColor, areColorsAlreadySetted, oneLineLength);
         if (!areColorsAlreadySetted)
         {
-            _lines[i].SetActiveColorToDefault(Line::ColorTarget::TEXT);
-            _lines[i].SetActiveColorToDefault(Line::ColorTarget::BACKGROUND);
+            _lines[i].SetActiveColorToDefault(ColorTarget::TEXT);
+            _lines[i].SetActiveColorToDefault(ColorTarget::BACKGROUND);
         }
     }
 }
@@ -115,6 +115,11 @@ constexpr void TextBlock::AddCharsForSeveralLines(
         for (std::size_t i = startIndex; i < endIndex; ++i)
             _lines[i].AddChars(charsCount, character);
     }
+}
+
+constexpr void TextBlock::AddCharsForAllLines(std::size_t charsCount, wchar_t character)
+{
+    AddCharsForSeveralLines(0, _lines.size(), charsCount, character);
 }
 
 constexpr void TextBlock::AddLines(std::size_t count)

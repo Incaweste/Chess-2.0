@@ -6,5 +6,5 @@ class ITextBlockBuilder
 {
 public:
     virtual ~ITextBlockBuilder() noexcept = default;
-    TextBlock virtual BuildTextBlock(const TextBlock::RGB* textColor, const TextBlock::RGB* bgColor) const = 0;
+    TextBlock virtual BuildTextBlock(const TextBlock::RGB* outsideTextColor, const TextBlock::RGB* outsideBGColor) const = 0;
 };

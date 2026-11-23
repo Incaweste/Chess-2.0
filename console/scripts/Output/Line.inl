@@ -1,12 +1,9 @@
+#pragma once
+
 class TextBlock::Line
 {
-public:
-    enum class ColorTarget
-    {
-        TEXT,
-        BACKGROUND
-    };
 private:
+    using ColorTarget = TextBlock::ColorTarget; 
     struct ColorHandler final
     {
     private:
